@@ -1,0 +1,2 @@
+pyyaml==3.12
+traitsui==5.1.0
