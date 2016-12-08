@@ -20,6 +20,7 @@ def write_version_py():
     with open(filename, 'w') as fh:
         fh.write(ver.format(VERSION))
 
+
 write_version_py()
 
 # main setup configuration class

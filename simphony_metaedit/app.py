@@ -1,7 +1,7 @@
 import os
-from traits.api import Any, HasTraits, Instance, Str
+from traits.api import Any, HasTraits, Instance
 from traitsui.api import View, TreeNode, Group, Item, TreeEditor
-import yaml
+# import yaml
 import logging
 
 from . import nodes
@@ -42,30 +42,28 @@ def _tree_editor(selected):
 
 def _tree_from_file(filename):
     file_node = nodes.FileNode(name=os.path.basename(filename))
-    with open(filename) as f:
-        yml_data = yaml.safe_load(f)
+    # with open(filename) as f:
+    #    yml_data = yaml.safe_load(f)
 
-    cuds_entries = []
-    cuba_entries = []
-    cuds_roots = []
+    # cuds_entries = []
+    # cuba_entries = []
+    # cuds_roots = []
 
-    for key, class_data in yml_data.get('CUDS_KEYS', {}).items():
-        parent = class_data.get("parent")
+    # for key, class_data in yml_data.get('CUDS_KEYS', {}).items():
+    #    parent = class_data.get("parent")
+    #
+    #    if not parent:
+    #        cuds_roots.append(key)
 
-        if not parent:
-            cuds_roots.append(key)
+    #    cuds_entries.append((key, parent))
 
-        cuds_entries.append((key, parent))
-
-    for key, class_data in yml_data.get('CUBA_KEYS', {}).items():
-        cuba_entries.append(key)
-
-    # build the tree:
-
+    # for key, class_data in yml_data.get('CUBA_KEYS', {}).items():
+    #    cuba_entries.append(key)
 
     # Reorganize
-    file_node.children = entries
+    # file_node.children = entries
     return file_node
+
 
 class App(HasTraits):
     root = Instance(nodes.RootNode)
@@ -109,4 +107,3 @@ class App(HasTraits):
                     logging.exception("Could not parse {}".format(filename))
                 else:
                     self.root.children.append(tree)
-
