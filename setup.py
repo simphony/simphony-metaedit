@@ -16,7 +16,7 @@ def write_version_py():
         os.path.dirname(__file__),
         'simphony_metaedit',
         'version.py')
-    ver = "__version__ = '{}'"
+    ver = "__version__ = '{}'\n"
     with open(filename, 'w') as fh:
         fh.write(ver.format(VERSION))
 
