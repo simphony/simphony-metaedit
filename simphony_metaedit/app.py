@@ -103,7 +103,7 @@ class App(HasTraits):
             if filename.endswith(".yml"):
                 try:
                     tree = _tree_from_file(os.path.join(directory, filename))
-                except Exception as e:
+                except Exception:
                     logging.exception("Could not parse {}".format(filename))
                 else:
                     self.root.children.append(tree)
