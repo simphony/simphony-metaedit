@@ -32,8 +32,8 @@ setup(
     description='Visualizer and editor for the metadata information',
     long_description=README_TEXT,
     install_requires=[
-        'traitsui~=5',
-        'pyyaml~=3'],
+        'traitsui~=5.1',
+        'pyyaml~=3.12'],
     packages=find_packages(),
     entry_points={
         'gui_scripts': [
