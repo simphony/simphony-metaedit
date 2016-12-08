@@ -45,15 +45,25 @@ def _tree_from_file(filename):
     with open(filename) as f:
         yml_data = yaml.safe_load(f)
 
-    entries = []
+    cuds_entries = []
+    cuba_entries = []
+    cuds_roots = []
 
-    print yml_data
     for key, class_data in yml_data.get('CUDS_KEYS', {}).items():
-        entries.append(nodes.EntryNode(name=key))
+        parent = class_data.get("parent")
+
+        if not parent:
+            cuds_roots.append(key)
+
+        cuds_entries.append((key, parent))
 
     for key, class_data in yml_data.get('CUBA_KEYS', {}).items():
-        entries.append(nodes.EntryNode(name=key))
+        cuba_entries.append(key)
 
+    # build the tree:
+
+
+    # Reorganize
     file_node.children = entries
     return file_node
 

@@ -13,6 +13,7 @@ VERSION = '0.1.0.dev0'
 with open('README.rst', 'r') as readme:
     README_TEXT = readme.read()
 
+
 def write_version_py():
     os.path.join(os.path.dirname(__file__), 'simphony_metaedit', 'version.py')
     ver = "__version__ = '%s'"
