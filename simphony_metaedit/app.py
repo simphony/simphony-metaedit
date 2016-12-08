@@ -95,7 +95,7 @@ class App(HasTraits):
 
         try:
             files = os.listdir(directory)
-        except OSError as e:
+        except OSError:
             logging.exception("Could not open directory {}".format(directory))
             return
 
