@@ -22,6 +22,7 @@ script:
     - pip install -r dev_requirements.txt
     - flake8 .
     - python -m unittest discover
+    - pip install -r doc_requirements.txt
     - sphinx-build -W doc/source doc/build/sphinx
 after_success:
     - codecov
