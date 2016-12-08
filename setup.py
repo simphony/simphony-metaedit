@@ -15,7 +15,7 @@ with open('README.rst', 'r') as readme:
 
 
 def write_version_py():
-    os.path.join(os.path.dirname(__file__), 'simphony_metaedit', 'version.py')
+    filename = os.path.join(os.path.dirname(__file__), 'simphony_metaedit', 'version.py')
     ver = "__version__ = '%s'"
     with open(filename, 'wb') as fh:
         fh.write(ver % VERSION)
