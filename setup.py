@@ -1,9 +1,6 @@
 import os
-import contextlib
-import textwrap
 
 from setuptools import setup, find_packages
-from distutils.cmd import Command
 
 # Setup version
 VERSION = '0.1.0.dev0'
@@ -15,12 +12,14 @@ with open('README.rst', 'r') as readme:
 
 
 def write_version_py():
-    filename = os.path.join(os.path.dirname(__file__),
+    filename = os.path.join(
+        os.path.dirname(__file__),
         'simphony_metaedit',
         'version.py')
-    ver = "__version__ = '{}'"
+    ver = "__version__ = '{}'\n"
     with open(filename, 'w') as fh:
         fh.write(ver.format(VERSION))
+
 
 write_version_py()
 
