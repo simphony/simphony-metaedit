@@ -1,27 +1,21 @@
 import os
-from traits.api import Any, HasTraits, Instance
-from traitsui.api import View, TreeNode, Group, Item, TreeEditor
-# import yaml
 import logging
 
+from traits.api import Any, HasTraits, Instance
+from traitsui.api import View, TreeNode, Group, Item, TreeEditor
+
 from . import nodes
+
 
 no_view = View()
 
 
 def _tree_editor(selected):
-    """Return a TreeEditor specifically for HDF5 file trees."""
+    """Return a TreeEditor."""
     return TreeEditor(
         nodes=[
             TreeNode(
                 node_for=[nodes.RootNode],
-                auto_open=True,
-                children='children',
-                label='name',
-                view=no_view,
-            ),
-            TreeNode(
-                node_for=[nodes.FileNode],
                 auto_open=True,
                 children='children',
                 label='name',
@@ -38,31 +32,6 @@ def _tree_editor(selected):
         editable=False,
         selected=selected,
     )
-
-
-def _tree_from_file(filename):
-    file_node = nodes.FileNode(name=os.path.basename(filename))
-    # with open(filename) as f:
-    #    yml_data = yaml.safe_load(f)
-
-    # cuds_entries = []
-    # cuba_entries = []
-    # cuds_roots = []
-
-    # for key, class_data in yml_data.get('CUDS_KEYS', {}).items():
-    #    parent = class_data.get("parent")
-    #
-    #    if not parent:
-    #        cuds_roots.append(key)
-
-    #    cuds_entries.append((key, parent))
-
-    # for key, class_data in yml_data.get('CUBA_KEYS', {}).items():
-    #    cuba_entries.append(key)
-
-    # Reorganize
-    # file_node.children = entries
-    return file_node
 
 
 class App(HasTraits):
@@ -107,3 +76,5 @@ class App(HasTraits):
                     logging.exception("Could not parse {}".format(filename))
                 else:
                     self.root.children.append(tree)
+
+

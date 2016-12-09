@@ -4,6 +4,8 @@ from .. import nodes
 
 
 class YamlDirParser:
+    """Parser for the current format of metadata as two files in a directory"""
+
     def parse(self, directory):
         """Parses a directory containing file and extracts the tree."""
 

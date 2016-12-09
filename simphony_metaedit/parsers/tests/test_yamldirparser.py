@@ -17,5 +17,5 @@ class TestYamlDirParser(unittest.TestCase):
         root = parser.parse(self.yamldir)
         self.assertEqual(type(root), nodes.RootNode)
 
-        self.assertEqual(type(root), nodes.RootNode)
+        self.assertEqual(len(list(nodes.traverse(root))), 100)
 
