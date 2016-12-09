@@ -36,7 +36,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'gui_scripts': [
-            ('simphony-metaview = simphony_metaview.run:main')
+            ('simphony-metaedit = simphony_metaedit.run:main')
         ]
     },
 )

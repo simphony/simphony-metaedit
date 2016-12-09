@@ -4,57 +4,51 @@ import logging
 from traits.api import Any, HasTraits, Instance
 from traitsui.api import View, TreeNode, Group, Item, TreeEditor
 
+from simphony_metaedit.parsers.yamldirparser import YamlDirParser
 from . import nodes
 
 
 no_view = View()
 
 
-def _tree_editor(selected):
-    """Return a TreeEditor."""
-    return TreeEditor(
-        nodes=[
-            TreeNode(
-                node_for=[nodes.RootNode],
-                auto_open=True,
-                children='children',
-                label='name',
-                view=no_view,
-            ),
-            TreeNode(
-                node_for=[nodes.EntryNode],
-                auto_open=False,
-                children='children',
-                label='name',
-                view=no_view,
-            ),
-        ],
-        editable=False,
-        selected=selected,
-    )
+tree_editor = TreeEditor(
+    nodes=[
+        TreeNode(
+            node_for=[nodes.RootNode],
+            auto_open=True,
+            children='children',
+            label='name',
+            view=View(["name"]),
+        ),
+        TreeNode(
+            node_for=[nodes.EntryNode],
+            auto_open=False,
+            children='children',
+            label='name',
+            view=View(["name"]),
+        ),
+    ],
+    editable=True,
+    selected='selected',
+)
 
 
 class App(HasTraits):
     root = Instance(nodes.RootNode)
     selected = Any
 
-    traits_view = View(
-        Group(
-            Item('root',
-                 editor=_tree_editor(selected='selected'),
-                 resizable=True
-                 ),
-            orientation='vertical',
-        ),
+    view = View(
+        Item('root',
+             editor=tree_editor,
+             resizable=True,
+             show_label=False
+             ),
         title='Simphony Metadata',
-        buttons=['Undo', 'OK', 'Cancel'],
         resizable=True,
-        width=.3,
-        height=.3
+        style='custom',
+        width=0.5,
+        height=0.5
     )
-
-    def _selected_changed(self):
-        print(self.selected.path)
 
     def _root_default(self):
         return nodes.RootNode()
@@ -68,13 +62,18 @@ class App(HasTraits):
             logging.exception("Could not open directory {}".format(directory))
             return
 
-        for filename in files:
-            if filename.endswith(".yml"):
-                try:
-                    tree = _tree_from_file(os.path.join(directory, filename))
-                except Exception:
-                    logging.exception("Could not parse {}".format(filename))
-                else:
-                    self.root.children.append(tree)
+        if "cuba.yml" in files and "simphony_metadata.yml" in files:
+            parser = YamlDirParser()
+        else:
+            logging.error("Cannot find files for "
+                          "directory {}".format(directory))
+            return
+
+        try:
+            root = parser.parse(directory)
+        except Exception:
+            logging.exception("Could not parse {}".format(directory))
+        else:
+            self.root = root
 
 
