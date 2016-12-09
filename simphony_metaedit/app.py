@@ -2,7 +2,7 @@ import os
 import logging
 
 from traits.api import Any, HasTraits, Instance
-from traitsui.api import View, TreeNode, Group, Item, TreeEditor
+from traitsui.api import View, TreeNode, Item, TreeEditor
 
 from simphony_metaedit.parsers.yamldirparser import YamlDirParser
 from . import nodes
@@ -75,5 +75,3 @@ class App(HasTraits):
             logging.exception("Could not parse {}".format(directory))
         else:
             self.root = root
-
-

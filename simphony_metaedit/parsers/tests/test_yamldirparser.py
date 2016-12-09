@@ -18,4 +18,3 @@ class TestYamlDirParser(unittest.TestCase):
         self.assertEqual(type(root), nodes.RootNode)
 
         self.assertEqual(len(list(nodes.traverse(root))), 100)
-
