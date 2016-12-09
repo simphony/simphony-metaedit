@@ -2,18 +2,21 @@ from traits.api import HasTraits, Str, List, This
 
 
 class EntryNode(HasTraits):
+    """Represents an entry in the tree"""
     name = Str('<unknown>')
-    path = Str('<unknown>')
     children = List(This)
 
 
-class FileNode(HasTraits):
-    name = Str('<unknown>')
+class RootNode(HasTraits):
+    """Represents the root node"""
+    name = Str("/")
     path = Str('/')
     children = List(EntryNode)
 
 
-class RootNode(HasTraits):
-    name = Str("/")
-    path = Str('/')
-    children = List(FileNode)
+def traverse(node):
+    """Traverses the tree depth first."""
+    yield node
+    for c in node.children:
+        for sub in traverse(c):
+            yield sub
