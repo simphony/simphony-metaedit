@@ -18,7 +18,7 @@ tree_editor = TreeEditor(
             auto_open=True,
             children='children',
             label='name',
-            view=View(["name"]),
+            view=View(["path"]),
         ),
         TreeNode(
             node_for=[nodes.EntryNode],
@@ -70,8 +70,6 @@ class App(HasTraits):
             return
 
         try:
-            root = parser.parse(directory)
+            self.root = parser.parse(directory)
         except Exception:
             logging.exception("Could not parse {}".format(directory))
-        else:
-            self.root = root
