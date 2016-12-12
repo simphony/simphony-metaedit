@@ -14,18 +14,52 @@ no_view = View()
 tree_editor = TreeEditor(
     nodes=[
         TreeNode(
-            node_for=[nodes.RootNode],
+            node_for=[nodes.Root],
             auto_open=True,
             children='children',
             label='name',
             view=View(["path"]),
         ),
         TreeNode(
-            node_for=[nodes.EntryNode],
+            node_for=[nodes.CubaTypes],
+            auto_open=False,
+            children='children',
+            label='=CUBA Types',
+            view=no_view
+        ),
+        TreeNode(
+            node_for=[nodes.CubaType],
+            auto_open=False,
+            label='name',
+            view=View(["name",
+                       "definition",
+                       "shape",
+                       "type",
+                       ]),
+        ),
+        TreeNode(
+            node_for=[nodes.Concepts],
+            auto_open=False,
+            children='children',
+            label='=Concepts',
+            view=no_view
+        ),
+        TreeNode(
+            node_for=[nodes.Concept],
             auto_open=False,
             children='children',
             label='name',
-            view=View(["name"]),
+            view=View([
+                "name",
+                "definition"]),
+        ),
+        TreeNode(
+            node_for=[nodes.Property],
+            auto_open=False,
+            label='name',
+            view=View([
+                "name",
+                ]),
         ),
     ],
     editable=True,
@@ -34,7 +68,7 @@ tree_editor = TreeEditor(
 
 
 class App(HasTraits):
-    root = Instance(nodes.RootNode)
+    root = Instance(nodes.Root)
     selected = Any
 
     view = View(
@@ -51,7 +85,7 @@ class App(HasTraits):
     )
 
     def _root_default(self):
-        return nodes.RootNode()
+        return nodes.Root()
 
     def __init__(self, directory):
         logging.debug("parsing directory {}".format(directory))

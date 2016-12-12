@@ -50,7 +50,7 @@ def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
     concept_nodemap = {}
 
     for concept_name in raw_metadata_nodemap.keys():
-        add_to_concepts_tree(
+        _add_to_concepts_tree(
             concepts_root,
             concept_nodemap,
             raw_metadata_nodemap,
@@ -142,8 +142,8 @@ def _parse_metadata_file(metadata_file):
     return nodemap.values()
 
 
-def add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
-                         concept_name):
+def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
+                          concept_name):
 
     concept = concept_nodemap.get(with_cuba_prefix(concept_name))
     if concept is not None:
@@ -151,15 +151,21 @@ def add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
 
     raw_concept = raw_concept_nodemap[concept_name]
     concept = nodes.Concept(
-        name=raw_concept.name,
+        name=with_cuba_prefix(raw_concept.name),
         definition=raw_concept.definition,
         )
+
+    for raw_property in raw_concept.properties:
+        property = nodes.Property(
+            name=with_cuba_prefix(raw_property.name),
+        )
+        concept.properties.append(property)
 
     parent_name = raw_concept.parent.strip()
     if len(parent_name) == 0:
         parent = None
     else:
-        add_to_concepts_tree(
+        _add_to_concepts_tree(
             concepts_root,
             concept_nodemap,
             raw_concept_nodemap,
@@ -169,7 +175,7 @@ def add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
     if parent is None:
         concepts_root.children.append(concept)
     else:
-        parent.children.append(concept)
+        parent.derived.append(concept)
 
     concept_nodemap[concept_name] = concept
 

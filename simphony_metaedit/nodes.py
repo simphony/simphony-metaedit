@@ -1,8 +1,12 @@
 from traits.api import HasTraits, Str, List, This, \
     Either, Instance, Int, Enum, Any
+from traits.api import Property as TraitsProperty
 
 
 # Raw nodes as extracted from the file, pretty much verbatim
+from traits.has_traits import cached_property
+
+
 class RawCubaType(HasTraits):
     name = Str()
     definition = Str()
@@ -35,26 +39,36 @@ class CubaTypes(HasTraits):
 
 
 class Property(HasTraits):
+    name = Str(regex="^CUBA\.[A-Z_]*")
     type = Instance(CubaType)
     default = Str()
     shape = Either(Str(), None)
 
 
+class Model(HasTraits):
+    ref = Str(regex="^CUBA\.[A-Z_]*")
+
+
+class Variable(HasTraits):
+    ref = Str(regex="^CUBA\.[A-Z_]*")
+
+
 class Concept(HasTraits):
     name = Str(regex="^CUBA\.[A-Z_]*")
     definition = Str()
-    models = List(This)
-    variables = List(This)
+    models = List(Model)
+    variables = List(Variable)
     properties = List(Property)
-    children = List(This)
+    derived = List(This)
+    children = TraitsProperty(depends_on="models,variables,properties,derived")
+
+    @cached_property
+    def _get_children(self):
+        return self.models + self.variables + self.properties + self.derived
 
 
 class Concepts(HasTraits):
     children = List(Concept)
-
-
-class Reference(HasTraits):
-    ref = Either(Str, Instance(Concept), Instance(CubaType))
 
 
 class Root(HasTraits):
