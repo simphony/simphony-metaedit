@@ -2,11 +2,32 @@ from traits.api import HasTraits, Str, List, This, \
     Either, Instance, Int, Enum, Any
 
 
-class CubaType(HasTraits):
+# Raw nodes as extracted from the file, pretty much verbatim
+class RawCubaType(HasTraits):
     name = Str()
     definition = Str()
     shape = List(Int)
     type = Enum('string', 'double', 'integer', 'boolean')
+
+
+class RawProperty(HasTraits):
+    name = Str()
+    default = Any()
+    shape = Any()
+
+
+class RawConcept(HasTraits):
+    name = Str()
+    parent = Str()
+    definition = Str()
+    models = List(Str)
+    variables = List(Str)
+    properties = List(RawProperty)
+
+
+# Nodes that we use to represent the actual logical tree
+class CubaType(RawCubaType):
+    name = Str(regex="^CUBA\.[A-Z_]*")
 
 
 class CubaTypes(HasTraits):
@@ -19,28 +40,13 @@ class Property(HasTraits):
     shape = Either(Str(), None)
 
 
-class RawProperty(HasTraits):
-    name = Str()
-    default = Any()
-    shape = Any()
-
-
 class Concept(HasTraits):
-    name = Str()
+    name = Str(regex="^CUBA\.[A-Z_]*")
     definition = Str()
     models = List(This)
     variables = List(This)
     properties = List(Property)
     children = List(This)
-
-
-class RawConcept(HasTraits):
-    name = Str()
-    parent = Str()
-    definition = Str()
-    models = List(Str)
-    variables = List(Str)
-    properties = List(RawProperty)
 
 
 class Concepts(HasTraits):
