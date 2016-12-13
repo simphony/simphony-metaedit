@@ -1,7 +1,7 @@
 import os
 import logging
 
-from traits.api import Any, HasTraits, Instance
+from traits.api import HasTraits, Instance
 from traitsui.api import View, TreeNode, Item, TreeEditor
 
 from simphony_metaedit.parsers.yamldirparser import YamlDirParser

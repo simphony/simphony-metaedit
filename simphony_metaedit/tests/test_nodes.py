@@ -39,5 +39,5 @@ class TestNodes(unittest.TestCase):
              ('truck', 3),
              ('car', 3),
              ('plane', 3),
-             ('sailplane', 4)
-            ])
+             ('sailplane', 4)]
+        )
