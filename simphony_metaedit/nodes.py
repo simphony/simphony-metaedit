@@ -1,13 +1,15 @@
-from traits.api import HasStrictTraits, Str, List, This, \
-    Either, Int, Enum, Any
+from traits.api import (
+    HasStrictTraits, Str, List, This, Either, Int, Enum, Any,
+    Instance, cached_property
+)
 from traits.api import Property as TraitsProperty
 
 
 # Raw nodes as extracted from the file, pretty much verbatim
-from traits.has_traits import cached_property
-
-
+# to the yaml representation, but uses traits to validate the content
+# according to the type.
 class RawCubaType(HasStrictTraits):
+    """Represents the raw data of a CUBA type before the linkage step"""
     name = Str()
     definition = Str()
     shape = List(Int)
@@ -15,12 +17,14 @@ class RawCubaType(HasStrictTraits):
 
 
 class RawProperty(HasStrictTraits):
+    """Represents the raw data of a property before the linkage step"""
     ref = Str()
     default = Any()
     shape = Any()
 
 
 class RawConcept(HasStrictTraits):
+    """Represents the raw data of a concept before the linkage step"""
     name = Str()
     parent = Str()
     definition = Str()
@@ -29,30 +33,36 @@ class RawConcept(HasStrictTraits):
     properties = List(RawProperty)
 
 
-# Nodes that we use to represent the actual logical tree
+# Nodes that we use to represent the final parse tree
 class CubaType(RawCubaType):
+    """Represents a CUBA type"""
     name = Str(regex="^CUBA\.[A-Z_]*")
 
 
 class CubaTypes(HasStrictTraits):
-    children = List(CubaType)
+    """Holds the list of the CUBA types"""
+    children = List(Instance(CubaType))
 
 
 class Property(HasStrictTraits):
+    """A property as specified in the Concept"""
     ref = Str(regex="^CUBA\.[A-Z_]*")
     default = Str()
     shape = Either(Str(), None)
 
 
 class Model(HasStrictTraits):
+    """A model as specified in the Concept"""
     ref = Str(regex="^CUBA\.[A-Z_]*")
 
 
 class Variable(HasStrictTraits):
+    """A variable as specified in the Concept"""
     ref = Str(regex="^CUBA\.[A-Z_]*")
 
 
 class Concept(HasStrictTraits):
+    """Contains a concept, that is, an entity we describe """
     name = Str(regex="^CUBA\.[A-Z_]*")
     definition = Str()
     models = List(Model)
@@ -67,6 +77,8 @@ class Concept(HasStrictTraits):
 
 
 class Concepts(HasStrictTraits):
+    """Container for concepts"""
+    name = Str("Concepts")
     children = List(Concept)
 
 
@@ -78,7 +90,9 @@ class Root(HasStrictTraits):
 
 
 def traverse(node, level=0):
-    """Traverses the tree depth first."""
+    """Traverses the tree depth first.
+    yields the node and the level at which the node is found.
+    """
     yield node, level
     if hasattr(node, "children"):
         for c in node.children:

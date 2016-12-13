@@ -4,6 +4,7 @@ from .. import nodes
 
 
 class ParsingError(Exception):
+    """Raised if an anomalous conditions is found during parsing or linkage"""
     pass
 
 
@@ -11,16 +12,45 @@ class YamlDirParser:
     """Parser for the current format of metadata as two files in a directory"""
 
     def parse(self, directory):
-        """Parses a directory containing file and extracts the tree."""
+        """Parses a directory containing file and extracts the tree.
+
+        Parameters
+        ----------
+        directory: str
+            the directory containing the cuba.yml and simphony_metadata.yml.
+
+        Returns
+        -------
+        The object tree.
+        """
         raw_cuba_nodes = _parse_cuba_file(
             os.path.join(directory, "cuba.yml"))
         raw_metadata_nodes = _parse_metadata_file(
             os.path.join(directory, "simphony_metadata.yml"))
         root_node = _do_linkage(raw_cuba_nodes, raw_metadata_nodes)
+
         return root_node
 
 
 def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
+    """Performs the final linkage between the raw nodes,
+    and returns the final parse tree.
+
+    Parameters
+    ----------
+
+    raw_cuba_nodes: list
+        a list of the raw nodes obtained by parsing the cuba.yml file
+
+    raw_metadata_nodes: list
+        a list of the raw nodes obtained by parsing the simphony_metadata.yml
+
+    Returns
+    -------
+    a Root node, properly filled in.
+
+    """
+
     raw_cuba_nodemap = {with_cuba_prefix(node.name): node
                         for node in raw_cuba_nodes}
     raw_metadata_nodemap = {with_cuba_prefix(node.name): node
@@ -61,6 +91,20 @@ def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
 
 
 def _parse_raw_cuba_type_data(name, data):
+    """Parses the content of the node from the direct yaml parsed content
+
+    Parameters
+    ----------
+    name: str
+        The name of the node
+
+    data: dict
+        The data _under_ the yaml node with the specified name
+
+    Returns
+    -------
+    nodes.RawCubaType
+    """
     return nodes.RawCubaType(
         name=name,
         definition=data.get("definition", ""),
@@ -70,6 +114,20 @@ def _parse_raw_cuba_type_data(name, data):
 
 
 def _parse_raw_concept(concept_name, raw_concept_data):
+    """Parses the content of the node from the direct yaml parsed content
+
+    Parameters
+    ----------
+    concept_name: str
+        The name of the node
+
+    raw_concept_data: dict
+        The data _under_ the yaml node with the specified name
+
+    Returns
+    -------
+    nodes.RawConcept
+    """
     raw_properties = []
 
     for prop_name, prop_data in [(name, data)
@@ -96,6 +154,18 @@ def _parse_raw_concept(concept_name, raw_concept_data):
 
 
 def _parse_cuba_file(cuba_file):
+    """Parses the content of the specified filename.
+    Returns a list of raw nodes for further processing.
+
+    Parameters
+    ----------
+    cuba_file: str
+        Path of the file to parse
+
+    Returns
+    -------
+    list of raw CUBA nodes.
+    """
     with open(cuba_file) as f:
         cuba_data = yaml.safe_load(f)
 
@@ -119,6 +189,18 @@ def _parse_cuba_file(cuba_file):
 
 
 def _parse_metadata_file(metadata_file):
+    """Parses the content of the specified filename.
+    Returns a list of raw nodes for further processing.
+
+    Parameters
+    ----------
+    metadata_file: str
+        Path of the file to parse
+
+    Returns
+    -------
+    list of raw metadata nodes.
+    """
     with open(metadata_file) as f:
         cuds_data = yaml.safe_load(f)
 
@@ -144,17 +226,42 @@ def _parse_metadata_file(metadata_file):
 
 def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
                           concept_name):
+    """
+    Recursive function that instantiates the Concept nodes and populates
+    the parse tree according to the "parent" hierarchy.
 
+    As we don't know the order of the incoming nodes (because the file
+    uses a yaml dictionary and the order is arbitrary no matter what the
+    order in the file is, we need to do the binding of the tree with a
+    lenient strategy that accommodates for non yet declared nodes.
+
+    Parameters
+    ----------
+    concepts_root: node.Concepts
+        the Concepts node that will hold the tree.
+    concept_nodemap: dict
+        a name: Concept mapping for easy lookup.
+    raw_concept_nodemap:
+        a name: RawConcept mapping for easy lookup. Note that the name can
+        be different from the nodemap above.
+    concept_name:
+        The name of the concept node to add to the tree.
+    """
+
+    # If the node is already in the tree, it's also already in the
+    # nodemap (which is populated in parallel). So we don't do anything.
     concept = concept_nodemap.get(with_cuba_prefix(concept_name))
     if concept is not None:
         return
 
+    # The node is not there, create it from the raw concept node.
     raw_concept = raw_concept_nodemap[concept_name]
     concept = nodes.Concept(
         name=with_cuba_prefix(raw_concept.name),
         definition=raw_concept.definition,
         )
 
+    # Add the ancillary data.
     for raw_property in raw_concept.properties:
         property = nodes.Property(
             ref=with_cuba_prefix(raw_property.ref),
@@ -177,6 +284,11 @@ def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
     if len(parent_name) == 0:
         parent = None
     else:
+        # If it has a parent specified in the raw concept node, then we have
+        # to first check if that node exists, recursively adding it if needed,
+        # until we either traverse up to the root of the parent hierarchy
+        # (creating each node along the way), or we find a node that is already
+        # present.
         _add_to_concepts_tree(
             concepts_root,
             concept_nodemap,
@@ -193,6 +305,7 @@ def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
 
 
 def with_cuba_prefix(string):
+    """Adds the CUBA. prefix to the string if not there."""
     if string.startswith("CUBA."):
         return string
 
@@ -200,6 +313,7 @@ def with_cuba_prefix(string):
 
 
 def without_cuba_prefix(string):
+    """Removes the CUBA. prefix to the string if there."""
     if string.startswith("CUBA."):
         return string[5:]
 

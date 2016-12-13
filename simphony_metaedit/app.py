@@ -8,9 +8,11 @@ from simphony_metaedit.parsers.yamldirparser import YamlDirParser
 from . import nodes
 
 
+# An empty view to show when the node has no reasonable View to show.
 no_view = View()
 
 
+# Representation of the tree, with the details on how to present each node.
 tree_editor = TreeEditor(
     nodes=[
         TreeNode(
@@ -88,8 +90,10 @@ tree_editor = TreeEditor(
 
 
 class App(HasTraits):
+    """Main application class."""
+
+    #: The main model, the root of the hierarchy.
     root = Instance(nodes.Root)
-    selected = Any
 
     view = View(
         Item('root',
