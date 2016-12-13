@@ -1,4 +1,4 @@
-from traits.api import HasTraits, Str, List, This, \
+from traits.api import HasStrictTraits, Str, List, This, \
     Either, Instance, Int, Enum, Any
 from traits.api import Property as TraitsProperty
 
@@ -7,20 +7,20 @@ from traits.api import Property as TraitsProperty
 from traits.has_traits import cached_property
 
 
-class RawCubaType(HasTraits):
+class RawCubaType(HasStrictTraits):
     name = Str()
     definition = Str()
     shape = List(Int)
     type = Enum('string', 'double', 'integer', 'boolean')
 
 
-class RawProperty(HasTraits):
-    name = Str()
+class RawProperty(HasStrictTraits):
+    ref = Str()
     default = Any()
     shape = Any()
 
 
-class RawConcept(HasTraits):
+class RawConcept(HasStrictTraits):
     name = Str()
     parent = Str()
     definition = Str()
@@ -34,26 +34,25 @@ class CubaType(RawCubaType):
     name = Str(regex="^CUBA\.[A-Z_]*")
 
 
-class CubaTypes(HasTraits):
+class CubaTypes(HasStrictTraits):
     children = List(CubaType)
 
 
-class Property(HasTraits):
-    name = Str(regex="^CUBA\.[A-Z_]*")
-    type = Instance(CubaType)
+class Property(HasStrictTraits):
+    ref = Str(regex="^CUBA\.[A-Z_]*")
     default = Str()
     shape = Either(Str(), None)
 
 
-class Model(HasTraits):
+class Model(HasStrictTraits):
     ref = Str(regex="^CUBA\.[A-Z_]*")
 
 
-class Variable(HasTraits):
+class Variable(HasStrictTraits):
     ref = Str(regex="^CUBA\.[A-Z_]*")
 
 
-class Concept(HasTraits):
+class Concept(HasStrictTraits):
     name = Str(regex="^CUBA\.[A-Z_]*")
     definition = Str()
     models = List(Model)
@@ -67,11 +66,11 @@ class Concept(HasTraits):
         return self.models + self.variables + self.properties + self.derived
 
 
-class Concepts(HasTraits):
+class Concepts(HasStrictTraits):
     children = List(Concept)
 
 
-class Root(HasTraits):
+class Root(HasStrictTraits):
     """Represents the root node"""
     name = Str("/")
     path = Str('/')
