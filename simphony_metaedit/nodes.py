@@ -1,5 +1,5 @@
 from traits.api import HasStrictTraits, Str, List, This, \
-    Either, Instance, Int, Enum, Any
+    Either, Int, Enum, Any
 from traits.api import Property as TraitsProperty
 
 

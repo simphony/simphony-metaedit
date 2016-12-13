@@ -22,7 +22,7 @@ class YamlDirParser:
 
 def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
     raw_cuba_nodemap = {with_cuba_prefix(node.name): node
-                    for node in raw_cuba_nodes}
+                        for node in raw_cuba_nodes}
     raw_metadata_nodemap = {with_cuba_prefix(node.name): node
                             for node in raw_metadata_nodes}
 

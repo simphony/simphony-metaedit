@@ -22,7 +22,7 @@ class TestYamlDirParser(unittest.TestCase):
 
         root = parser.parse(self.yamldir)
         self.assertEqual(type(root), nodes.Root)
-        self.assertEqual(len(list(nodes.traverse(root))), 218)
+        self.assertEqual(len(list(nodes.traverse(root))), 398)
 
     def test_parse_raw_cuba_type(self):
         res = _parse_raw_cuba_type_data("POSITION", {
