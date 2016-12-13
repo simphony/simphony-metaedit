@@ -54,11 +54,31 @@ tree_editor = TreeEditor(
                 "definition"]),
         ),
         TreeNode(
-            node_for=[nodes.Property],
+            node_for=[nodes.Model],
             auto_open=False,
-            label='name',
+            icon_item="<list_editor>",
+            label='ref',
             view=View([
-                "name",
+                "ref",
+            ]),
+        ),
+        TreeNode(
+            node_for=[nodes.Variable],
+            auto_open=False,
+            label='ref',
+            view=View([
+                "ref",
+            ]),
+        ),
+        TreeNode(
+            node_for=[nodes.Property],
+            icon_item="<object>",
+            auto_open=False,
+            label='ref',
+            view=View([
+                "ref",
+                "default",
+                "shape"
                 ]),
         ),
     ],

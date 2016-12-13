@@ -76,10 +76,10 @@ def _parse_raw_concept(concept_name, raw_concept_data):
                                  for name, data in raw_concept_data.items()
                                  if name.startswith("CUBA.")]:
         if prop_data is None:
-            raw_property = nodes.RawProperty(name=concept_name)
+            raw_property = nodes.RawProperty(ref=prop_name)
         else:
             raw_property = nodes.RawProperty(
-                name=prop_name,
+                ref=prop_name,
                 default=prop_data.get("default"),
                 shape=prop_data.get("shape")
             )
@@ -157,9 +157,21 @@ def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
 
     for raw_property in raw_concept.properties:
         property = nodes.Property(
-            name=with_cuba_prefix(raw_property.name),
+            ref=with_cuba_prefix(raw_property.ref),
         )
         concept.properties.append(property)
+
+    for model_name in raw_concept.models:
+        model = nodes.Model(
+            ref=with_cuba_prefix(model_name),
+        )
+        concept.models.append(model)
+
+    for variable_name in raw_concept.variables:
+        variable = nodes.Variable(
+            ref=with_cuba_prefix(variable_name),
+        )
+        concept.variables.append(variable)
 
     parent_name = raw_concept.parent.strip()
     if len(parent_name) == 0:
