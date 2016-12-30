@@ -6,7 +6,7 @@ from simphony_metaedit.parsers.exceptions import ParsingError
 from simphony_metaedit.parsers.cuba_file_parser import (
     CUBAFileParser)
 
-import StringIO
+from six import StringIO
 
 # Basic, working document that complies with the spec
 TEMPLATE = """---
@@ -51,7 +51,7 @@ class TestCUBAFileParser(unittest.TestCase):
         self.assertEqual(len(root.entries), 116)
 
     def test_trivial_content(self):
-        content = StringIO.StringIO(TEMPLATE)
+        content = StringIO(TEMPLATE)
         root = self.parser.parse(content)
 
         self.assertIsInstance(root, nodes.RawRootNode)
@@ -68,14 +68,14 @@ class TestCUBAFileParser(unittest.TestCase):
         self.assertEqual(root.entries["MATRIX"].shape, [3, 3])
 
     def test_parse_incorrect_version(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             _change_lines_starting_with(TEMPLATE, "VERSION", ""))
         with self.assertRaisesRegexp(ParsingError,
                                      "Invalid or missing value for VERSION"):
             self.parser.parse(content)
 
         for version in ["hello", "[]"]:
-            content = StringIO.StringIO(
+            content = StringIO(
                 _change_lines_starting_with(
                     TEMPLATE,
                     "VERSION",
@@ -86,7 +86,7 @@ class TestCUBAFileParser(unittest.TestCase):
                 self.parser.parse(content)
 
         for version in ["1.1", "0.9"]:
-            content = StringIO.StringIO(
+            content = StringIO(
                 _change_lines_starting_with(
                     TEMPLATE,
                     "VERSION",
@@ -95,7 +95,7 @@ class TestCUBAFileParser(unittest.TestCase):
                 self.parser.parse(content)
 
     def test_parse_incorrect_cuba_marker(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             _change_lines_starting_with(TEMPLATE, "CUBA:", "")
         )
 
@@ -104,17 +104,17 @@ class TestCUBAFileParser(unittest.TestCase):
             self.parser.parse(content)
 
     def test_no_cuba_keys(self):
-        content = StringIO.StringIO(_extract_lines(TEMPLATE, 0, 7))
+        content = StringIO(_extract_lines(TEMPLATE, 0, 7))
         with self.assertRaisesRegexp(ParsingError, "Missing key CUBA_KEYS"):
             self.parser.parse(content)
 
     def test_unrecognized_root_key(self):
-        content = StringIO.StringIO(TEMPLATE+"\nunrecognized: 1\n")
+        content = StringIO(TEMPLATE+"\nunrecognized: 1\n")
         with self.assertRaisesRegexp(ParsingError, "Unrecognized key"):
             self.parser.parse(content)
 
     def test_invalid_cuba_name(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             TEMPLATE+"""
     whatever:
         definition: Position of a point or node or atom
@@ -125,7 +125,7 @@ class TestCUBAFileParser(unittest.TestCase):
             self.parser.parse(content)
 
     def test_no_type(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             TEMPLATE+"""
     WHATEVER:
         definition: Position of a point or node or atom
@@ -135,7 +135,7 @@ class TestCUBAFileParser(unittest.TestCase):
             self.parser.parse(content)
 
     def test_unrecognized_type(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             TEMPLATE+"""
     WHATEVER:
         definition: Position of a point or node or atom
@@ -147,7 +147,7 @@ class TestCUBAFileParser(unittest.TestCase):
             self.parser.parse(content)
 
     def test_length_in_non_string(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             TEMPLATE+"""
     WHATEVER:
         definition: Position of a point or node or atom
@@ -158,7 +158,7 @@ class TestCUBAFileParser(unittest.TestCase):
             self.parser.parse(content)
 
     def test_unrecognized_key_in_entry(self):
-        content = StringIO.StringIO(
+        content = StringIO(
             TEMPLATE+"""
     WHATEVER:
         definition: Position of a point or node or atom

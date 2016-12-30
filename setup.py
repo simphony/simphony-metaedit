@@ -32,7 +32,8 @@ setup(
     long_description=README_TEXT,
     install_requires=[
         'traitsui~=5.1',
-        'pyyaml~=3.12'],
+        'pyyaml~=3.12'
+        'six~=1.10'],
     packages=find_packages(),
     entry_points={
         'gui_scripts': [
