@@ -47,8 +47,8 @@ class TestCUBAFileParser(unittest.TestCase):
 
     def test_parse_cuba_real_file(self):
         with open(os.path.join(self.yamldir, "cuba.yml")) as f:
-            nodes = self.parser.parse(f)
-        self.assertEqual(len(nodes), 116)
+            root = self.parser.parse(f)
+        self.assertEqual(len(root.entries), 116)
 
     def test_trivial_content(self):
         content = StringIO.StringIO(TEMPLATE)

@@ -57,7 +57,7 @@ class CUBAType(RawCUBAEntry):
     name = Str(regex="^CUBA\.[A-Z_]*")
 
 
-class CubaTypes(HasStrictTraits):
+class CUBATypes(HasStrictTraits):
     """Holds the list of the CUBA types"""
     children = List(Instance(CUBAType))
 
@@ -104,7 +104,7 @@ class Root(HasStrictTraits):
     """Represents the root node"""
     name = Str("/")
     path = Str('/')
-    children = List(Either(Concepts, CubaTypes))
+    children = List(Either(Concepts, CUBATypes))
 
 
 def traverse(node, level=0):

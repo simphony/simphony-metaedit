@@ -104,7 +104,6 @@ class CUBAFileParser:
 
         return root_node
 
-
     def _parse_raw_cuba_entry_data(self, name, data):
         """Parses the content of the node from the direct yaml parsed content
 
@@ -146,7 +145,8 @@ class CUBAFileParser:
 
         for s in entry.shape:
             if s <= 0:
-                raise ParsingError("Invalid value for shape in {}".format(name))
+                raise ParsingError("Invalid value for shape in {}".format(
+                    name))
 
         length = data.get("length")
 
