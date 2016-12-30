@@ -1,11 +1,8 @@
 import os
-import yaml
+from .exceptions import ParsingError
 from .. import nodes
-
-
-class ParsingError(Exception):
-    """Raised if an anomalous conditions is found during parsing or linkage"""
-    pass
+from .cuba_file_parser import CubaFileParser
+from .metadata_file_parser import MetadataFileParser
 
 
 class YamlDirParser:
@@ -23,10 +20,14 @@ class YamlDirParser:
         -------
         The object tree.
         """
-        raw_cuba_nodes = _parse_cuba_file(
-            os.path.join(directory, "cuba.yml"))
-        raw_metadata_nodes = _parse_metadata_file(
-            os.path.join(directory, "simphony_metadata.yml"))
+        cuba_file_path = os.path.join(directory, "cuba.yml")
+        with open(cuba_file_path) as f:
+            raw_cuba_nodes = CubaFileParser().parse(f)
+
+        metadata_file_path = os.path.join(directory, "simphony_metadata.yml")
+        with open(metadata_file_path) as f:
+            raw_metadata_nodes = MetadataFileParser().parse(f)
+
         root_node = _do_linkage(raw_cuba_nodes, raw_metadata_nodes)
 
         return root_node
@@ -90,140 +91,6 @@ def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
     return root
 
 
-def _parse_raw_cuba_type_data(name, data):
-    """Parses the content of the node from the direct yaml parsed content
-
-    Parameters
-    ----------
-    name: str
-        The name of the node
-
-    data: dict
-        The data _under_ the yaml node with the specified name
-
-    Returns
-    -------
-    nodes.RawCubaType
-    """
-    return nodes.RawCubaType(
-        name=name,
-        definition=data.get("definition", ""),
-        type=data["type"],
-        shape=data["shape"]
-    )
-
-
-def _parse_raw_concept(concept_name, raw_concept_data):
-    """Parses the content of the node from the direct yaml parsed content
-
-    Parameters
-    ----------
-    concept_name: str
-        The name of the node
-
-    raw_concept_data: dict
-        The data _under_ the yaml node with the specified name
-
-    Returns
-    -------
-    nodes.RawConcept
-    """
-    raw_properties = []
-
-    for prop_name, prop_data in [(name, data)
-                                 for name, data in raw_concept_data.items()
-                                 if name.startswith("CUBA.")]:
-        if prop_data is None:
-            raw_property = nodes.RawProperty(ref=prop_name)
-        else:
-            raw_property = nodes.RawProperty(
-                ref=prop_name,
-                default=prop_data.get("default"),
-                shape=prop_data.get("shape")
-            )
-        raw_properties.append(raw_property)
-
-    return nodes.RawConcept(
-        name=concept_name,
-        parent=raw_concept_data.get("parent") or "",
-        definition=raw_concept_data.get("definition") or "",
-        models=raw_concept_data.get("models") or [],
-        variables=raw_concept_data.get("variables") or [],
-        properties=raw_properties
-    )
-
-
-def _parse_cuba_file(cuba_file):
-    """Parses the content of the specified filename.
-    Returns a list of raw nodes for further processing.
-
-    Parameters
-    ----------
-    cuba_file: str
-        Path of the file to parse
-
-    Returns
-    -------
-    list of raw CUBA nodes.
-    """
-    with open(cuba_file) as f:
-        cuba_data = yaml.safe_load(f)
-
-    nodemap = {}
-
-    for name, data in cuba_data.get("CUBA_KEYS", {}).items():
-        if name in nodemap:
-            raise ParsingError("Duplicate entry {} in "
-                               "{}".format(name, cuba_file))
-
-        try:
-            raw_cuba_type = _parse_raw_cuba_type_data(name, data)
-        except Exception as e:
-            raise ParsingError("Unable to parse entry {} "
-                               "in {}: {}".format(name,
-                                                  cuba_file,
-                                                  str(e)))
-        nodemap[raw_cuba_type.name] = raw_cuba_type
-
-    return nodemap.values()
-
-
-def _parse_metadata_file(metadata_file):
-    """Parses the content of the specified filename.
-    Returns a list of raw nodes for further processing.
-
-    Parameters
-    ----------
-    metadata_file: str
-        Path of the file to parse
-
-    Returns
-    -------
-    list of raw metadata nodes.
-    """
-    with open(metadata_file) as f:
-        cuds_data = yaml.safe_load(f)
-
-    nodemap = {}
-    # We need to collect all cuds entities first, because in the file
-    # they are a dictionary, and they can be recovered in arbitrary order.
-    for name, data in cuds_data.get("CUDS_KEYS", {}).items():
-        if name in nodemap:
-            raise ParsingError("Duplicate entry {} in "
-                               "{}".format(name, metadata_file))
-        try:
-            raw_concept = _parse_raw_concept(name, data)
-        except Exception as e:
-            raise ParsingError("Unable to parse entry {} "
-                               "in {}: {}".format(name,
-                                                  metadata_file,
-                                                  str(e)))
-
-        nodemap[raw_concept.name] = raw_concept
-
-    return nodemap.values()
-
-
 def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
                           concept_name):
     """
@@ -259,7 +126,7 @@ def _add_to_concepts_tree(concepts_root, concept_nodemap, raw_concept_nodemap,
     concept = nodes.Concept(
         name=with_cuba_prefix(raw_concept.name),
         definition=raw_concept.definition,
-        )
+    )
 
     # Add the ancillary data.
     for raw_property in raw_concept.properties:
