@@ -1,19 +1,37 @@
 from traits.api import (
-    HasStrictTraits, Str, List, This, Either, Int, Enum, Any,
-    Instance, cached_property
+    HasStrictTraits, Str, String, List, This, Either, Int, Enum, Any,
+    Instance, cached_property, Dict
 )
 from traits.api import Property as TraitsProperty
 
 
-# Raw nodes as extracted from the file, pretty much verbatim
+# Support traits
+CUBAName = String(regex="^[A-Z_][A-Z0-9_]*$")
+Version = String(regex="^\d+\.\d+$")
+
+
+# First pass parsing raw nodes as extracted from the file, almost verbatim
 # to the yaml representation, but uses traits to validate the content
 # according to the type.
-class RawCubaType(HasStrictTraits):
+
+# Nodes for CUBA parser
+class RawCUBAEntry(HasStrictTraits):
     """Represents the raw data of a CUBA type before the linkage step"""
-    name = Str()
+    name = CUBAName
     definition = Str()
     shape = List(Int)
+    length = Either(Int, None)
     type = Enum('string', 'double', 'integer', 'boolean')
+
+
+class RawRootNode(HasStrictTraits):
+    version = Version()
+    purpose = Str()
+    type = Enum("CUBA", "CUDS")
+    entries = Dict(CUBAName(), RawCUBAEntry)
+
+
+#######
 
 
 class RawProperty(HasStrictTraits):
@@ -34,14 +52,14 @@ class RawConcept(HasStrictTraits):
 
 
 # Nodes that we use to represent the final parse tree
-class CubaType(RawCubaType):
+class CUBAType(RawCUBAEntry):
     """Represents a CUBA type"""
     name = Str(regex="^CUBA\.[A-Z_]*")
 
 
 class CubaTypes(HasStrictTraits):
     """Holds the list of the CUBA types"""
-    children = List(Instance(CubaType))
+    children = List(Instance(CUBAType))
 
 
 class Property(HasStrictTraits):
