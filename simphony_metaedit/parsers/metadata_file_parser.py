@@ -77,5 +77,3 @@ def _parse_raw_concept(concept_name, raw_concept_data):
         variables=raw_concept_data.get("variables") or [],
         properties=raw_properties
     )
-
-

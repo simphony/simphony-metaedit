@@ -60,5 +60,3 @@ def _parse_raw_cuba_type_data(name, data):
         type=data["type"],
         shape=data["shape"]
     )
-
-
