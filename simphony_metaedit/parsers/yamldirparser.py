@@ -1,7 +1,7 @@
 import os
 from .exceptions import ParsingError
 from .. import nodes
-from .cuba_file_parser import CubaFileParser
+from .cuba_file_parser import CUBAFileParser
 from .metadata_file_parser import MetadataFileParser
 
 
@@ -22,13 +22,13 @@ class YamlDirParser:
         """
         cuba_file_path = os.path.join(directory, "cuba.yml")
         with open(cuba_file_path) as f:
-            raw_cuba_nodes = CubaFileParser().parse(f)
+            root_cuba = CUBAFileParser().parse(f)
 
         metadata_file_path = os.path.join(directory, "simphony_metadata.yml")
         with open(metadata_file_path) as f:
             raw_metadata_nodes = MetadataFileParser().parse(f)
 
-        root_node = _do_linkage(raw_cuba_nodes, raw_metadata_nodes)
+        root_node = _do_linkage(root_cuba, raw_metadata_nodes)
 
         return root_node
 
@@ -53,7 +53,7 @@ def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
     """
 
     raw_cuba_nodemap = {with_cuba_prefix(node.name): node
-                        for node in raw_cuba_nodes}
+                        for node in raw_cuba_nodes.entries.values()}
     raw_metadata_nodemap = {with_cuba_prefix(node.name): node
                             for node in raw_metadata_nodes}
 
@@ -66,10 +66,10 @@ def _do_linkage(raw_cuba_nodes, raw_metadata_nodes):
             common_keys))
 
     root = nodes.Root()
-    cuba_types = nodes.CubaTypes()
+    cuba_types = nodes.CUBATypes()
     root.children.append(cuba_types)
     for raw_cuba_type in raw_cuba_nodemap.values():
-        cuba_type = nodes.CubaType(
+        cuba_type = nodes.CUBAType(
             name=with_cuba_prefix(raw_cuba_type.name),
             definition=raw_cuba_type.definition,
             shape=raw_cuba_type.shape,
