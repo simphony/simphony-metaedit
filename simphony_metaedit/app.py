@@ -109,4 +109,3 @@ class App(HasStrictTraits):
                 e)
             )
             self.reset_traits(['ontology'])
-
