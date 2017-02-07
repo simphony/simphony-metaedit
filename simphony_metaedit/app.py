@@ -1,6 +1,6 @@
 import logging
 
-from traits.api import HasStrictTraits, Instance, List
+from traits.api import HasStrictTraits, Instance
 from traitsui.api import View, TreeNode, TreeEditor, Item, Tabbed
 
 from simphony_metaparser.yamldirparser import YamlDirParser
@@ -87,8 +87,8 @@ class App(HasStrictTraits):
             title='Simphony Metadata',
             resizable=True,
             style='custom',
-            width=0.5,
-            height=0.5
+            width=1.0,
+            height=1.0
         )
 
     def _ontology_default(self):
