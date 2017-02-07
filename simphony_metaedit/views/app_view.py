@@ -1,7 +1,28 @@
 from traitsui.api import View, TreeEditor, TreeNode, Item, Tabbed
+from traitsui.group import VGroup
+
+from simphony_metaedit.views.no_view import no_view
 from simphony_metaparser import nodes
 
-from .no_view import no_view
+
+# Visualization of the CUDS Items internal data
+cuds_item_view = View(
+    VGroup(
+        VGroup(
+            Item("name", full_size=True),
+            label="CUDS Item Data",
+            show_border=True,
+        ),
+        VGroup(
+            label="Fixed Properties",
+            show_border=True,
+        ),
+        VGroup(
+            label="Variable Properties",
+            show_border=True,
+        ),
+    )
+)
 
 # Representation of the CUDS Items tree
 cuds_editor = TreeEditor(
@@ -11,13 +32,25 @@ cuds_editor = TreeEditor(
             auto_open=True,
             children="children",
             label='name',
-            view=no_view
+            view=cuds_item_view
         ),
     ],
     editable=True,
     selected='selected',
 )
 
+# Representation of the CUBA Data types
+cuba_data_view = View(
+    VGroup(
+        Item("name"),
+        Item("definition"),
+        Item("type"),
+        Item("shape"),
+        Item("length"),
+        label="CUBA Data Types",
+        show_border=True
+    )
+)
 
 # Representation of the CUBA Data Types.
 cuba_editor = TreeEditor(
@@ -33,7 +66,7 @@ cuba_editor = TreeEditor(
             node_for=[nodes.CUBADataType],
             auto_open=False,
             label='name',
-            view=no_view
+            view=cuba_data_view
         ),
     ],
     editable=True,
