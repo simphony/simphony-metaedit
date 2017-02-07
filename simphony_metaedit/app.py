@@ -1,11 +1,10 @@
-import os
 import logging
 
-from traits.api import HasTraits, Instance
-from traitsui.api import View, TreeNode, Item, TreeEditor
+from traits.api import HasStrictTraits, Instance, List
+from traitsui.api import View, TreeNode, TreeEditor, Item, Tabbed
 
-from simphony_metaedit.parsers.yamldirparser import YamlDirParser
-from . import nodes
+from simphony_metaparser.yamldirparser import YamlDirParser
+from simphony_metaparser import nodes
 
 
 # An empty view to show when the node has no reasonable View to show.
@@ -13,121 +12,96 @@ no_view = View()
 
 
 # Representation of the tree, with the details on how to present each node.
-tree_editor = TreeEditor(
+cuds_editor = TreeEditor(
     nodes=[
         TreeNode(
-            node_for=[nodes.Root],
-            auto_open=True,
-            children='children',
-            label='name',
-            view=View(["path"]),
-        ),
-        TreeNode(
-            node_for=[nodes.CubaTypes],
+            node_for=[nodes.CUDSItem],
             auto_open=False,
-            children='children',
-            label='=CUBA Types',
+            children="children",
+            label='name',
             view=no_view
         ),
         TreeNode(
-            node_for=[nodes.CubaType],
+            node_for=[nodes.FixedPropertyEntry],
             auto_open=False,
             label='name',
-            view=View(["name",
-                       "definition",
-                       "shape",
-                       "type",
-                       ]),
-        ),
-        TreeNode(
-            node_for=[nodes.Concepts],
-            auto_open=False,
-            children='children',
-            label='=Concepts',
             view=no_view
         ),
         TreeNode(
-            node_for=[nodes.Concept],
+            node_for=[nodes.VariablePropertyEntry],
             auto_open=False,
-            children='children',
             label='name',
-            view=View([
-                "name",
-                "definition"]),
-        ),
-        TreeNode(
-            node_for=[nodes.Model],
-            auto_open=False,
-            icon_item="<list_editor>",
-            label='ref',
-            view=View([
-                "ref",
-            ]),
-        ),
-        TreeNode(
-            node_for=[nodes.Variable],
-            auto_open=False,
-            label='ref',
-            view=View([
-                "ref",
-            ]),
-        ),
-        TreeNode(
-            node_for=[nodes.Property],
-            icon_item="<object>",
-            auto_open=False,
-            label='ref',
-            view=View([
-                "ref",
-                "default",
-                "shape"
-                ]),
+            view=no_view
         ),
     ],
     editable=True,
     selected='selected',
 )
 
+cuba_editor = TreeEditor(
+    nodes=[
+        TreeNode(
+            node_for=[nodes.Ontology],
+            auto_open=False,
+            label='=CUBA Types',
+            children="data_types",
+            view=no_view
+        ),
+        TreeNode(
+            node_for=[nodes.CUBADataType],
+            auto_open=False,
+            label='name',
+            view=no_view
+        ),
+    ],
+    editable=True,
+    selected='selected',
+    hide_root=True,
+)
 
-class App(HasTraits):
+
+class App(HasStrictTraits):
     """Main application class."""
 
     #: The main model, the root of the hierarchy.
-    root = Instance(nodes.Root)
+    ontology = Instance(nodes.Ontology)
 
-    view = View(
-        Item('root',
-             editor=tree_editor,
-             resizable=True,
-             show_label=False
-             ),
-        title='Simphony Metadata',
-        resizable=True,
-        style='custom',
-        width=0.5,
-        height=0.5
-    )
+    view = \
+        View(
+            Tabbed(
+                Item(
+                    'object.ontology.root_cuds_item',
+                    editor=cuds_editor,
+                    resizable=True,
+                    show_label=False,
+                    label="CUDS"
+                ),
+                Item(
+                    'ontology',
+                    editor=cuba_editor,
+                    resizable=True,
+                    show_label=False,
+                    label="CUBA"
+                ),
+            ),
+            title='Simphony Metadata',
+            resizable=True,
+            style='custom',
+            width=0.5,
+            height=0.5
+        )
 
-    def _root_default(self):
-        return nodes.Root()
+    def _ontology_default(self):
+        return nodes.Ontology()
 
     def __init__(self, directory):
         logging.debug("parsing directory {}".format(directory))
 
-        try:
-            files = os.listdir(directory)
-        except OSError:
-            logging.exception("Could not open directory {}".format(directory))
-            return
-
-        if "cuba.yml" in files and "simphony_metadata.yml" in files:
-            parser = YamlDirParser()
-        else:
-            logging.error("Cannot find files for "
-                          "directory {}".format(directory))
-            return
+        parser = YamlDirParser()
 
         try:
-            self.root = parser.parse(directory)
+            ontology = parser.parse(directory)
         except Exception:
             logging.exception("Could not parse {}".format(directory))
+
+        self.ontology = ontology
