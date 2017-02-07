@@ -1,12 +1,10 @@
 import logging
 
 from traits.api import HasStrictTraits, Instance
-from traitsui.api import View, TreeNode, TreeEditor, Item, Tabbed
 
 from simphony_metaedit.views.app_view import app_view
 from simphony_metaparser.yamldirparser import YamlDirParser
 from simphony_metaparser import nodes
-
 
 
 class App(HasStrictTraits):
