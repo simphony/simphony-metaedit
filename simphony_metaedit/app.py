@@ -43,7 +43,7 @@ cuba_editor = TreeEditor(
         TreeNode(
             node_for=[nodes.Ontology],
             auto_open=False,
-            label='=CUBA Types',
+            label='=CUBA Data Types',
             children="data_types",
             view=no_view
         ),
@@ -74,14 +74,14 @@ class App(HasStrictTraits):
                     editor=cuds_editor,
                     resizable=True,
                     show_label=False,
-                    label="CUDS"
+                    label="CUDS Items"
                 ),
                 Item(
                     'ontology',
                     editor=cuba_editor,
                     resizable=True,
                     show_label=False,
-                    label="CUBA"
+                    label="CUBA Data Types"
                 ),
             ),
             title='Simphony Metadata',
