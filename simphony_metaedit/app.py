@@ -92,7 +92,9 @@ class App(HasStrictTraits):
         )
 
     def _ontology_default(self):
-        return nodes.Ontology()
+        ontology = nodes.Ontology()
+        ontology.root_cuds_item = nodes.CUDSItem(name="CUBA.ROOT")
+        return ontology
 
     def __init__(self, directory):
         logging.debug("parsing directory {}".format(directory))
@@ -100,8 +102,11 @@ class App(HasStrictTraits):
         parser = YamlDirParser()
 
         try:
-            ontology = parser.parse(directory)
-        except Exception:
-            logging.exception("Could not parse {}".format(directory))
+            self.ontology = parser.parse(directory)
+        except Exception as e:
+            logging.exception("Could not parse {} : {}".format(
+                directory,
+                e)
+            )
+            self.reset_traits(['ontology'])
 
-        self.ontology = ontology
