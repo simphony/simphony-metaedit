@@ -8,20 +8,8 @@ cuds_editor = TreeEditor(
     nodes=[
         TreeNode(
             node_for=[nodes.CUDSItem],
-            auto_open=False,
+            auto_open=True,
             children="children",
-            label='name',
-            view=no_view
-        ),
-        TreeNode(
-            node_for=[nodes.FixedPropertyEntry],
-            auto_open=False,
-            label='name',
-            view=no_view
-        ),
-        TreeNode(
-            node_for=[nodes.VariablePropertyEntry],
-            auto_open=False,
             label='name',
             view=no_view
         ),
