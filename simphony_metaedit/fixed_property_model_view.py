@@ -6,9 +6,12 @@ class FixedPropertyModelView(ModelView):
 
     traits_view = View(
         VGroup(
-            Item("model.name"),
-            Item("model.scope"),
+            Item("model.name",
+                 enabled_when="False"),
+            Item("model.scope",
+                 enabled_when="False"),
             Item("model.default",
+                 enabled_when="False",
                  visible_when="model.scope == 'CUBA.USER'",
                  full_size=True,
                  style="custom"),

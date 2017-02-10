@@ -10,17 +10,25 @@ class CUBADataTypeModelView(ModelView):
             VGroup(
                 Item(
                     "model.name",
-                    resizable=True
+                    resizable=True,
+                    enabled_when="False"
                 ),
                 Item(
                     "model.definition",
-                    resizable=True
+                    resizable=True,
+                    enabled_when="False"
                 ),
-                Item("model.type"),
-                Item("model.shape", editor=CSVListEditor()),
+                Item("model.type",
+                     enabled_when="False"
+                     ),
+                Item("model.shape",
+                     editor=CSVListEditor(),
+                     enabled_when="False"
+                     ),
                 Item(
                     "model.length",
-                    visible_when="model.type == 'string'"
+                    visible_when="model.type == 'string'",
+                    enabled_when="False"
                 ),
 
                 label="CUBA Data Type",

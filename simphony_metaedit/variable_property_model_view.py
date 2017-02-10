@@ -39,20 +39,27 @@ class VariablePropertyModelView(ModelView):
 
     def default_traits_view(self):
         return View(
-            Item("model.name"),
-            Item("model.scope"),
+            Item("model.name",
+                 enabled_when="False"),
+            Item("model.scope",
+                 enabled_when="False"),
             Item("model.shape",
                  visible_when="model.scope == 'CUBA.USER'",
+                 enabled_when="False",
                  editor=TextEditor(
                      evaluate=shape_format_func,
                      format_func=shape_format_func,
                      )
                  ),
-            Item("has_default"),
+            Item(
+                "has_default",
+                enabled_when="False",
+            ),
             Item(
                 "model.default",
                 visible_when="model.scope == 'CUBA.USER' "
                              "and has_default",
+                enabled_when="False",
                 editor=TextEditor(
                     evaluate=default_evaluate_func,
                     format_func=default_format_func

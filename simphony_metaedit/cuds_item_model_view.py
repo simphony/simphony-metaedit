@@ -28,9 +28,9 @@ class PropertyAdapter(ListStrAdapter):
         return prop.name
 
     def get_text_color(self, object, trait, index):
-        # Paint the inherited properties pink
+        # Paint the inherited properties light blue
         if self.item in object.inherited_properties:
-            return "#FFC0C0"
+            return "#C0C0FF"
 
         return super(PropertyAdapter, self).get_text_color(object,
                                                            trait,
@@ -45,7 +45,8 @@ class CUDSItemModelView(ModelView):
             VGroup(
                 Item(
                     "model.name",
-                    resizable=True
+                    resizable=True,
+                    enabled_when="False"
                 ),
                 label="CUDS Item Data",
                 show_border=True,
@@ -83,7 +84,6 @@ class CUDSItemModelView(ModelView):
                             "selected_variable_property_model_view",
                             style="custom",
                             enabled_when="variable_property_model_view_enabled",  # noqa
-                            full_size=True
                         ),
                         show_border=False
                     ),
