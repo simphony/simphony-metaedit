@@ -19,7 +19,7 @@ before_install:
     - export PATH=${HOME}/edm/bin:${PATH}
     - edm environments create simphony
     - . $HOME/.edm/envs/simphony/bin/activate 
-    - edm install pip setuptools pyqt
+    - edm install -y pip setuptools pyqt 
 install:
     - pip install -r requirements.txt
     - python setup.py develop
