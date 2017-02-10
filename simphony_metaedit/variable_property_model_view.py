@@ -54,7 +54,8 @@ class VariablePropertyModelView(ModelView):
                 editor=TextEditor(
                     evaluate=default_evaluate_func,
                     format_func=default_format_func
-                    )
+                    ),
+                style="custom"
             ),
         )
 

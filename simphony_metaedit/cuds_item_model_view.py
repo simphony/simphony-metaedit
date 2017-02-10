@@ -43,7 +43,10 @@ class CUDSItemModelView(ModelView):
     traits_view = View(
         VGroup(
             VGroup(
-                Item("model.name"),
+                Item(
+                    "model.name",
+                    resizable=True
+                ),
                 label="CUDS Item Data",
                 show_border=True,
             ),
@@ -60,11 +63,13 @@ class CUDSItemModelView(ModelView):
                         UItem(
                             "selected_fixed_property_model_view",
                             style="custom",
-                            enabled_when="fixed_property_model_view_enabled"
+                            enabled_when="fixed_property_model_view_enabled",
+                            full_size=True
                         ),
+                        show_border=False
                     ),
                     label="Fixed Properties",
-                    show_border=True,
+                    show_border=False,
                 ),
                 HGroup(
                     VGroup(
@@ -77,11 +82,13 @@ class CUDSItemModelView(ModelView):
                         UItem(
                             "selected_variable_property_model_view",
                             style="custom",
-                            enabled_when="variable_property_model_view_enabled"
+                            enabled_when="variable_property_model_view_enabled",  # noqa
+                            full_size=True
                         ),
+                        show_border=False
                     ),
                     label="Variable Properties",
-                    show_border=True,
+                    show_border=False,
                 ),
             )
         )
