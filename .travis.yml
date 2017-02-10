@@ -17,6 +17,9 @@ install:
 script:
     - pip install -r dev_requirements.txt
     - flake8 .
+    - export ETS_TOOLKIT=qt4
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
     - python -m unittest discover
     - pip install -r doc_requirements.txt
     - sphinx-build -W doc/source doc/build/sphinx
