@@ -15,7 +15,10 @@ cache:
 before_install:
     - ccache -s
     - export PATH=/usr/lib/ccache:${PATH}
-    - pip install --upgrade pip
+    - wget https://package-data.enthought.com/edm/rh5_x86_64/1.4/edm_1.4.1_linux_x86_64.sh && sh edm_1.4.1_linux_x86_64.sh
+    - edm environments create simphony
+    - edm shell --environment=simphony
+    - edm install pip setuptools pyqt
 install:
     - pip install -r requirements.txt
     - python setup.py develop
