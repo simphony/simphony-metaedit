@@ -28,10 +28,12 @@ class TestCUBADataTypeModelView(GuiTestAssistant, unittest.TestCase):
                              length=128,
                              name="CUBA.FOO")
 
-        CUBADataTypeModelView(model=model)
+        mv = CUBADataTypeModelView(model=model)
 
         model.type = "integer"
         self.assertEqual(model.length, None)
 
         model.type = "string"
         self.assertEqual(model.length, 128)
+
+        del mv
