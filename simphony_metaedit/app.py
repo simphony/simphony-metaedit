@@ -109,4 +109,3 @@ class App(ModelView):
         selected_cuds
         """
         self.selected_cuba_model_view = CUBADataTypeModelView(model=value)
-
