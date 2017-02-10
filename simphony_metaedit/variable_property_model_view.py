@@ -1,3 +1,5 @@
+from traits.has_traits import on_trait_change
+
 from simphony_metaparser.flags import NoDefault
 from traits.api import Bool
 from traitsui.api import ModelView, View, Item, TextEditor
@@ -62,7 +64,8 @@ class VariablePropertyModelView(ModelView):
     def _has_default_default(self):
         return self.model.default is not NoDefault
 
-    def _has_default_changed(self, value):
+    @on_trait_change("has_default")
+    def _update_default(self, value):
         if value is False:
             self.model.default = NoDefault
         else:
