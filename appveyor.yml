@@ -20,7 +20,7 @@ init:
   - ps: $Env:edm_package = $Env:temp + "\edm.msi"
 install:
   - ps: (new-object net.webclient).DownloadFile('https://bootstrap.pypa.io/get-pip.py', $Env:pip_bootstrap)
-  - ps: (new-obhect net.webclient).DownloadFile('https://package-data.enthought.com/edm/win_x86_64/1.4/edm_1.4.1_x86_64.msi', $Env:edm_package)
+  - ps: (new-object net.webclient).DownloadFile('https://package-data.enthought.com/edm/win_x86_64/1.4/edm_1.4.1_x86_64.msi', $Env:edm_package)
   - ps: msiexec /i $Env:edm_package /q
   - ps: python $Env:pip_bootstrap
   - "%PYTHON%\\python.exe -m pip install wheel"
