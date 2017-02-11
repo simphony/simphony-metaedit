@@ -105,7 +105,7 @@ class App(ModelView):
     @on_trait_change("selected_cuba")
     def _update_selected_cuba_model_view(self, value):
         """
-        Syncs the selected_cuds_model_view with the newly selected
-        selected_cuds
+        Syncs the selected_cuba_model_view with the newly selected
+        selected_cuba
         """
         self.selected_cuba_model_view = CUBADataTypeModelView(model=value)
