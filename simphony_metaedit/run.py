@@ -1,5 +1,9 @@
 from __future__ import print_function
+import logging
 import sys
+
+from simphony_metaparser.yamldirparser import YamlDirParser
+from simphony_metaparser import nodes
 
 from . import app
 
@@ -15,5 +19,17 @@ def main():
         _usage()
         sys.exit(0)
 
-    a = app.App(directory=directory)
+    parser = YamlDirParser()
+
+    try:
+        model = parser.parse(directory)
+    except Exception as e:
+        logging.exception("Could not parse {} : {}".format(
+            directory,
+            e)
+        )
+        model = nodes.Ontology()
+        model.root_cuds_item = nodes.CUDSItem(name="CUBA.ROOT")
+
+    a = app.App(model=model)
     a.configure_traits()
