@@ -4,4 +4,6 @@ Changelog
 Release 0.1.0
 -------------
 
+* Visualization of node data (#13)
+* Extracted parser to simphony-metaparser (#11)
 * Initial release

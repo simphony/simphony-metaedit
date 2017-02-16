@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 # Setup version
-VERSION = '0.1.0.dev0'
+VERSION = '0.1.0'
 
 
 # Read description
@@ -34,7 +34,7 @@ setup(
         'traitsui~=5.1',
         'pyyaml~=3.12',
         'six~=1.10',
-        'simphony_metaparser>=0.2.0.dev0'],
+        'simphony_metaparser~=0.2.0'],
     packages=find_packages(),
     entry_points={
         'gui_scripts': [
