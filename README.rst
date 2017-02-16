@@ -1,7 +1,23 @@
 Simphony-metaedit
 =================
 
-An editor for the SimPhoNy metadata file, available at https://github.com/simphony/simphony-metadata
+A GUI visualizer for the SimPhoNy metadata files available at https://github.com/simphony/simphony-metadata
+
+Installation
+------------
+
+To install simphony-metaedit, you need a working EDM deployment. You can download EDM from::
+
+    https://www.enthought.com/products/edm/installers/
+
+Once EDM is deployed on your machine, create and activate an appropriate virtual environment::
+
+    edm environments create simphony-metaedit
+    edm shell --environment=simphony-metaedit
+
+
+ 
+
 
 Directory structure
 -------------------
