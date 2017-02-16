@@ -182,3 +182,8 @@ uml:
 	mv source/uml/*.png source/images
 	@echo
 	@echo "Conversion finished the uml files are in source/images."
+
+.PHONY: apidoc
+apidoc:
+	-rm -rf source/api/
+	sphinx-apidoc -o source/api ../simphony_metaedit
