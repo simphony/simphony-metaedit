@@ -1,0 +1,6 @@
+distribute_remove  1.0.0-4   enthought/free
+pip                9.0.1-1   enthought/free
+pyqt               4.11.4-7  enthought/free
+qt                 4.8.7-7   enthought/free
+setuptools         23.1.0-2  enthought/free
+sip                4.17-4    enthought/free
